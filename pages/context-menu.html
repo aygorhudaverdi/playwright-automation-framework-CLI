@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Context Menu · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Context Menu</h1>
+    <p class="subtitle">Right-click (or trigger <code>contextmenu</code>) inside the box below to open a custom menu instead of the browser's native one.</p>
+
+    <div class="card">
+      <div id="context-area" class="context-area" data-testid="context-area">
+        Right-click anywhere in this box
+      </div>
+      <p id="context-result" class="result-box" style="margin-top:14px;" data-testid="context-result">No action taken yet</p>
+    </div>
+  </main>
+
+  <div id="context-menu" class="context-menu hidden" data-testid="context-menu">
+    <button data-action="rename" data-testid="context-menu-rename">Rename</button>
+    <button data-action="duplicate" data-testid="context-menu-duplicate">Duplicate</button>
+    <button data-action="delete" data-testid="context-menu-delete">Delete</button>
+  </div>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const area = document.getElementById("context-area");
+    const menu = document.getElementById("context-menu");
+    const result = document.getElementById("context-result");
+
+    area.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      menu.style.left = `${e.clientX}px`;
+      menu.style.top = `${e.clientY}px`;
+      menu.classList.remove("hidden");
+    });
+
+    menu.querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        result.textContent = `Action selected: ${btn.dataset.action}`;
+        menu.classList.add("hidden");
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target)) menu.classList.add("hidden");
+    });
+  </script>
+</body>
+</html>

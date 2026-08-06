@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iFrames · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>iFrames</h1>
+    <p class="subtitle">Practice switching browsing context. The frame below is a <code>srcdoc</code> document with its own editable content and button.</p>
+
+    <div class="card">
+      <h2>Editable content frame</h2>
+      <div class="frame-box">
+        <iframe
+          id="content-frame"
+          title="Editable content frame"
+          data-testid="content-frame"
+          srcdoc="
+            <html>
+              <head>
+                <style>
+                  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#0f1220; color:#e8e9f3; margin:0; padding:16px; }
+                  button { background:#6c8cff; color:#0f1220; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; font-weight:600; margin-top:10px; }
+                  [contenteditable] { border:1px solid #2a2f4a; border-radius:6px; padding:10px; min-height:60px; }
+                </style>
+              </head>
+              <body>
+                <p>This paragraph lives inside an iframe.</p>
+                <div id='editable' contenteditable='true' data-testid='iframe-editable'>Edit this text from inside the frame.</div>
+                <button id='iframe-btn' data-testid='iframe-button'>Click me (inside frame)</button>
+                <p id='iframe-output' data-testid='iframe-output'></p>
+                <script>
+                  document.getElementById('iframe-btn').addEventListener('click', function () {
+                    document.getElementById('iframe-output').textContent = 'Button inside the iframe was clicked.';
+                  });
+                </script>
+              </body>
+            </html>
+          "
+        ></iframe>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Parent page control</h2>
+      <p>This content lives in the main document, outside the frame &mdash; confirm your driver switches context back correctly.</p>
+      <p id="parent-marker" data-testid="parent-marker">Parent document marker</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

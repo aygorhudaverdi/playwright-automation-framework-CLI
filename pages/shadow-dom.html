@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shadow DOM · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Shadow DOM</h1>
+    <p class="subtitle">A native web component with an open shadow root. Regular <code>document.querySelector</code> cannot see inside it &mdash; you need to pierce the shadow root explicitly.</p>
+
+    <div class="card">
+      <h2>&lt;qa-counter&gt; custom element</h2>
+      <qa-counter data-testid="qa-counter"></qa-counter>
+    </div>
+
+    <div class="card">
+      <h2>Notes</h2>
+      <ul>
+        <li>Shadow root mode: <code>open</code> (accessible via <code>element.shadowRoot</code>).</li>
+        <li>The increment button and count display both live inside the shadow tree.</li>
+        <li>Playwright pierces open shadow roots automatically with normal locators; Selenium needs explicit <code>shadowRoot</code> traversal.</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    class QaCounter extends HTMLElement {
+      constructor() {
+        super();
+        const shadow = this.attachShadow({ mode: "open" });
+        shadow.innerHTML = `
+          <style>
+            .wrap {
+              display: flex;
+              align-items: center;
+              gap: 14px;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            }
+            button {
+              background: #6c8cff;
+              color: #0f1220;
+              border: none;
+              padding: 8px 14px;
+              border-radius: 6px;
+              cursor: pointer;
+              font-weight: 600;
+            }
+            .count {
+              font-size: 1.3rem;
+              font-weight: 700;
+              min-width: 24px;
+              text-align: center;
+            }
+          </style>
+          <div class="wrap">
+            <button id="decrement" data-testid="shadow-decrement">-</button>
+            <span class="count" id="count" data-testid="shadow-count">0</span>
+            <button id="increment" data-testid="shadow-increment">+</button>
+          </div>
+        `;
+        this._count = 0;
+        this._countEl = shadow.getElementById("count");
+        shadow.getElementById("increment").addEventListener("click", () => this._update(1));
+        shadow.getElementById("decrement").addEventListener("click", () => this._update(-1));
+      }
+
+      _update(delta) {
+        this._count += delta;
+        this._countEl.textContent = String(this._count);
+      }
+    }
+
+    customElements.define("qa-counter", QaCounter);
+  </script>
+</body>
+</html>

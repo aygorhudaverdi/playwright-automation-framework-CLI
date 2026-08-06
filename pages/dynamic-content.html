@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Content · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Dynamic Content</h1>
+    <p class="subtitle">Text, IDs, and attributes that change every time you refresh or click &mdash; useful for testing that your locators aren't accidentally pinned to a random value.</p>
+
+    <div class="card">
+      <h2>Randomized on page load</h2>
+      <p>Reload this page and the values below will change.</p>
+      <ul>
+        <li>Session token: <code id="session-token" data-testid="session-token"></code></li>
+        <li>Server timestamp: <code id="server-timestamp" data-testid="server-timestamp"></code></li>
+        <li>Element id suffix: <span id="dynamic-id-holder" data-testid="dynamic-id-holder"></span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Randomized on click</h2>
+      <p>Click to draw a new random quote and a fresh element id, without a page reload.</p>
+      <button id="reroll-btn" data-testid="reroll-btn">New quote</button>
+      <p id="quote-box" class="result-box" style="margin-top:14px;" data-testid="quote-box"></p>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    function randomId(len = 8) {
+      const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+      let out = "";
+      for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * chars.length)];
+      return out;
+    }
+
+    document.getElementById("session-token").textContent = randomId(16);
+    document.getElementById("server-timestamp").textContent = new Date().toISOString();
+
+    const dynIdHolder = document.getElementById("dynamic-id-holder");
+    const dynId = "elem-" + randomId(6);
+    const span = document.createElement("span");
+    span.id = dynId;
+    span.setAttribute("data-testid", "dynamic-id-target");
+    span.textContent = dynId;
+    dynIdHolder.appendChild(span);
+
+    const QUOTES = [
+      "Testing leads to failure, and failure leads to understanding.",
+      "A bug in production is worth ten in staging &mdash; you just don't know it yet.",
+      "Automate the boring parts so you can think harder about the interesting ones.",
+      "Flaky tests are a debt that compounds silently.",
+      "The best locator is the one your app's markup makes obvious.",
+    ];
+
+    function reroll() {
+      const quote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+      const box = document.getElementById("quote-box");
+      box.textContent = quote;
+      box.id = "quote-box-" + randomId(4);
+    }
+
+    document.getElementById("reroll-btn").addEventListener("click", reroll);
+    reroll();
+  </script>
+</body>
+</html>

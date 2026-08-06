@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dropdowns · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Dropdowns</h1>
+    <p class="subtitle">A native select element and a fully custom JS dropdown (the kind that trips up naive selectors).</p>
+
+    <div class="card">
+      <h2>Native select</h2>
+      <div class="field" style="max-width:260px;">
+        <label for="native-select">Favorite browser</label>
+        <select id="native-select" data-testid="native-select">
+          <option value="">Choose&hellip;</option>
+          <option value="chrome">Chrome</option>
+          <option value="firefox">Firefox</option>
+          <option value="safari">Safari</option>
+          <option value="edge">Edge</option>
+        </select>
+      </div>
+      <div id="native-result" class="result-box" data-testid="native-select-result">No selection yet</div>
+    </div>
+
+    <div class="card">
+      <h2>Custom dropdown</h2>
+      <div class="field" style="max-width:260px;position:relative;">
+        <label id="custom-label" for="custom-dropdown-toggle">Environment</label>
+        <button
+          type="button"
+          id="custom-dropdown-toggle"
+          class="secondary"
+          data-testid="custom-dropdown-toggle"
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          style="width:100%;text-align:left;"
+        >
+          Select environment
+        </button>
+        <ul
+          id="custom-dropdown-menu"
+          class="hidden"
+          role="listbox"
+          data-testid="custom-dropdown-menu"
+          style="list-style:none;margin:4px 0 0;padding:6px;position:absolute;left:0;right:0;background:var(--panel);border:1px solid var(--panel-border);border-radius:8px;z-index:10;"
+        >
+          <li role="option" data-value="dev" data-testid="custom-dropdown-option-dev" style="padding:8px 10px;border-radius:6px;cursor:pointer;">Development</li>
+          <li role="option" data-value="staging" data-testid="custom-dropdown-option-staging" style="padding:8px 10px;border-radius:6px;cursor:pointer;">Staging</li>
+          <li role="option" data-value="prod" data-testid="custom-dropdown-option-prod" style="padding:8px 10px;border-radius:6px;cursor:pointer;">Production</li>
+        </ul>
+      </div>
+      <div id="custom-result" class="result-box" data-testid="custom-dropdown-result">No selection yet</div>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const nativeSelect = document.getElementById("native-select");
+    const nativeResult = document.getElementById("native-result");
+    nativeSelect.addEventListener("change", () => {
+      nativeResult.textContent = nativeSelect.value
+        ? `Selected: ${nativeSelect.options[nativeSelect.selectedIndex].text}`
+        : "No selection yet";
+    });
+
+    const toggle = document.getElementById("custom-dropdown-toggle");
+    const menu = document.getElementById("custom-dropdown-menu");
+    const customResult = document.getElementById("custom-result");
+
+    toggle.addEventListener("click", () => {
+      const isOpen = !menu.classList.contains("hidden");
+      menu.classList.toggle("hidden");
+      toggle.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    menu.querySelectorAll("li[role='option']").forEach((option) => {
+      option.addEventListener("mouseenter", () => {
+        option.style.background = "rgba(108, 140, 255, 0.15)";
+      });
+      option.addEventListener("mouseleave", () => {
+        option.style.background = "transparent";
+      });
+      option.addEventListener("click", () => {
+        toggle.textContent = option.textContent;
+        customResult.textContent = `Selected: ${option.textContent} (value=${option.dataset.value})`;
+        menu.classList.add("hidden");
+        toggle.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.add("hidden");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  </script>
+</body>
+</html>

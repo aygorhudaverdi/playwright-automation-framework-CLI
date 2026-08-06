@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QA Playground</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="index.html">Home</a>
+    </nav>
+  </header>
+
+  <main class="wide">
+    <h1>QA Playground</h1>
+    <p class="subtitle">
+      A static, no-backend UI automation practice target. Each page below exercises a
+      different automation scenario &mdash; forms, waits, alerts, drag-and-drop, iframes,
+      shadow DOM, and more. Every interactive element carries a stable
+      <code>id</code> and <code>data-testid</code> attribute so you can write reliable
+      Selenium, Playwright, or Cypress locators against it.
+    </p>
+
+    <div class="grid" id="page-grid">
+      <a class="tile" href="pages/forms.html" data-testid="nav-tile-forms">
+        <div class="tile-title">Form Inputs</div>
+        <div class="tile-desc">Text, textarea, select, radio, submit &amp; validation states.</div>
+      </a>
+      <a class="tile" href="pages/login.html" data-testid="nav-tile-login">
+        <div class="tile-title">Login Form</div>
+        <div class="tile-desc">Client-side validated login with success/error states.</div>
+      </a>
+      <a class="tile" href="pages/checkboxes.html" data-testid="nav-tile-checkboxes">
+        <div class="tile-title">Checkboxes</div>
+        <div class="tile-desc">Independent, pre-checked, and indeterminate checkboxes.</div>
+      </a>
+      <a class="tile" href="pages/dropdowns.html" data-testid="nav-tile-dropdowns">
+        <div class="tile-title">Dropdowns</div>
+        <div class="tile-desc">Native <code>&lt;select&gt;</code> plus a custom JS dropdown.</div>
+      </a>
+      <a class="tile" href="pages/dynamic-loading.html" data-testid="nav-tile-dynamic-loading">
+        <div class="tile-title">Dynamic Loading</div>
+        <div class="tile-desc">Elements that appear after a delay &mdash; practice explicit waits.</div>
+      </a>
+      <a class="tile" href="pages/dynamic-content.html" data-testid="nav-tile-dynamic-content">
+        <div class="tile-title">Dynamic Content</div>
+        <div class="tile-desc">Content and attributes that change on every reload/click.</div>
+      </a>
+      <a class="tile" href="pages/alerts.html" data-testid="nav-tile-alerts">
+        <div class="tile-title">JS Alerts</div>
+        <div class="tile-desc"><code>alert()</code>, <code>confirm()</code>, and <code>prompt()</code> dialogs.</div>
+      </a>
+      <a class="tile" href="pages/modals.html" data-testid="nav-tile-modals">
+        <div class="tile-title">Modals</div>
+        <div class="tile-desc">In-page modal dialog with focus trap and overlay dismiss.</div>
+      </a>
+      <a class="tile" href="pages/tables.html" data-testid="nav-tile-tables">
+        <div class="tile-title">Sortable Table</div>
+        <div class="tile-desc">Click-to-sort columns and row-level actions.</div>
+      </a>
+      <a class="tile" href="pages/drag-and-drop.html" data-testid="nav-tile-drag-and-drop">
+        <div class="tile-title">Drag and Drop</div>
+        <div class="tile-desc">HTML5 drag-and-drop between source and target boxes.</div>
+      </a>
+      <a class="tile" href="pages/hover.html" data-testid="nav-tile-hover">
+        <div class="tile-title">Hover Reveal</div>
+        <div class="tile-desc">Captions and actions that only render on hover.</div>
+      </a>
+      <a class="tile" href="pages/file-upload.html" data-testid="nav-tile-file-upload">
+        <div class="tile-title">File Upload</div>
+        <div class="tile-desc">File input plus a drag-and-drop upload zone.</div>
+      </a>
+      <a class="tile" href="pages/iframes.html" data-testid="nav-tile-iframes">
+        <div class="tile-title">iFrames</div>
+        <div class="tile-desc">Editable content and nested frame context switching.</div>
+      </a>
+      <a class="tile" href="pages/shadow-dom.html" data-testid="nav-tile-shadow-dom">
+        <div class="tile-title">Shadow DOM</div>
+        <div class="tile-desc">A native web component with encapsulated markup.</div>
+      </a>
+      <a class="tile" href="pages/infinite-scroll.html" data-testid="nav-tile-infinite-scroll">
+        <div class="tile-title">Infinite Scroll</div>
+        <div class="tile-desc">Items appended on scroll &mdash; practice scrolling &amp; polling.</div>
+      </a>
+      <a class="tile" href="pages/key-presses.html" data-testid="nav-tile-key-presses">
+        <div class="tile-title">Key Presses</div>
+        <div class="tile-desc">Reports the last key pressed, for send-keys style tests.</div>
+      </a>
+      <a class="tile" href="pages/context-menu.html" data-testid="nav-tile-context-menu">
+        <div class="tile-title">Context Menu</div>
+        <div class="tile-desc">Custom right-click menu, native <code>oncontextmenu</code>.</div>
+      </a>
+      <a class="tile" href="pages/broken-images.html" data-testid="nav-tile-broken-images">
+        <div class="tile-title">Broken Images</div>
+        <div class="tile-desc">A mix of valid and broken <code>&lt;img&gt;</code> sources.</div>
+      </a>
+      <a class="tile" href="pages/slow-elements.html" data-testid="nav-tile-slow-elements">
+        <div class="tile-title">Slow Elements</div>
+        <div class="tile-desc">Buttons with artificial latency and progress states.</div>
+      </a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    QA Playground &mdash; static UI automation practice target. No backend, no data leaves your browser.
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

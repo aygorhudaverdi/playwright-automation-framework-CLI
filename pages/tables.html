@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sortable Table · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Sortable Table</h1>
+    <p class="subtitle">Click a column header to sort. Each row has a delete action &mdash; good for practicing row-scoped locators.</p>
+
+    <div class="card">
+      <table data-testid="data-table">
+        <thead>
+          <tr>
+            <th class="sortable" data-key="name" data-testid="th-name">Name <span class="arrow">&#8645;</span></th>
+            <th class="sortable" data-key="role" data-testid="th-role">Role <span class="arrow">&#8645;</span></th>
+            <th class="sortable" data-key="status" data-testid="th-status">Status <span class="arrow">&#8645;</span></th>
+            <th data-testid="th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="table-body" data-testid="table-body"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    let rows = [
+      { id: 1, name: "Alice Chen", role: "QA Engineer", status: "active" },
+      { id: 2, name: "Bruno Silva", role: "Developer", status: "active" },
+      { id: 3, name: "Chidi Okafor", role: "Product Manager", status: "inactive" },
+      { id: 4, name: "Dana Kowalski", role: "QA Engineer", status: "active" },
+      { id: 5, name: "Ezra Fields", role: "Developer", status: "inactive" },
+    ];
+
+    let sortKey = null;
+    let sortAsc = true;
+
+    const tbody = document.getElementById("table-body");
+
+    function render() {
+      tbody.innerHTML = "";
+      rows.forEach((row) => {
+        const tr = document.createElement("tr");
+        tr.setAttribute("data-testid", `row-${row.id}`);
+        tr.innerHTML = `
+          <td data-testid="cell-name-${row.id}">${row.name}</td>
+          <td data-testid="cell-role-${row.id}">${row.role}</td>
+          <td data-testid="cell-status-${row.id}">
+            <span class="badge ${row.status === "active" ? "ok" : "fail"}">${row.status}</span>
+          </td>
+          <td><button class="secondary delete-btn" data-id="${row.id}" data-testid="delete-btn-${row.id}">Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = Number(btn.dataset.id);
+          rows = rows.filter((r) => r.id !== id);
+          render();
+        });
+      });
+    }
+
+    document.querySelectorAll("th.sortable").forEach((th) => {
+      th.addEventListener("click", () => {
+        const key = th.dataset.key;
+        sortAsc = sortKey === key ? !sortAsc : true;
+        sortKey = key;
+        rows.sort((a, b) => {
+          const cmp = a[key].localeCompare(b[key]);
+          return sortAsc ? cmp : -cmp;
+        });
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>

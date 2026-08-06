@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>File Upload · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>File Upload</h1>
+    <p class="subtitle">No backend &mdash; selected files are only read for their name/size/type in the browser, never sent anywhere.</p>
+
+    <div class="card">
+      <h2>Standard file input</h2>
+      <input type="file" id="file-input" data-testid="file-input" multiple />
+      <ul id="file-list" style="margin-top:14px;" data-testid="file-list"></ul>
+    </div>
+
+    <div class="card">
+      <h2>Drag-and-drop upload zone</h2>
+      <div id="dropzone" class="dropzone" data-testid="dropzone">
+        Drag files here, or click to browse
+        <input type="file" id="dropzone-input" class="hidden" data-testid="dropzone-input" multiple />
+      </div>
+      <ul id="dropzone-file-list" style="margin-top:14px;" data-testid="dropzone-file-list"></ul>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    function renderFiles(files, listEl) {
+      listEl.innerHTML = "";
+      Array.from(files).forEach((file) => {
+        const li = document.createElement("li");
+        li.setAttribute("data-testid", "uploaded-file");
+        li.textContent = `${file.name} (${file.size} bytes, ${file.type || "unknown type"})`;
+        listEl.appendChild(li);
+      });
+    }
+
+    document.getElementById("file-input").addEventListener("change", (e) => {
+      renderFiles(e.target.files, document.getElementById("file-list"));
+    });
+
+    const dropzone = document.getElementById("dropzone");
+    const dropzoneInput = document.getElementById("dropzone-input");
+    const dropzoneList = document.getElementById("dropzone-file-list");
+
+    dropzone.addEventListener("click", () => dropzoneInput.click());
+
+    dropzoneInput.addEventListener("change", (e) => {
+      renderFiles(e.target.files, dropzoneList);
+    });
+
+    ["dragenter", "dragover"].forEach((evt) => {
+      dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.add("dragover");
+      });
+    });
+
+    ["dragleave", "drop"].forEach((evt) => {
+      dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove("dragover");
+      });
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      if (e.dataTransfer.files.length) {
+        renderFiles(e.dataTransfer.files, dropzoneList);
+      }
+    });
+  </script>
+</body>
+</html>

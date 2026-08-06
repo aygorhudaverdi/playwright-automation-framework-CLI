@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Loading · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Dynamic Loading</h1>
+    <p class="subtitle">Two flavors of asynchronous element appearance &mdash; good for practicing explicit waits.</p>
+
+    <div class="card">
+      <h2>Example 1 &mdash; element hidden, then shown</h2>
+      <p>The target element exists in the DOM the whole time but is hidden via CSS until the button is clicked.</p>
+      <button id="start-1" data-testid="dl1-start">Start</button>
+      <div id="loading-1" class="hidden" style="margin-top:14px;" data-testid="dl1-loading">
+        <span class="spinner"></span> Loading&hellip;
+      </div>
+      <p id="finish-1" class="hidden result-box success" style="margin-top:14px;" data-testid="dl1-finish">
+        Hello World! Element 1 is ready.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Example 2 &mdash; element added to the DOM after loading</h2>
+      <p>The target element does not exist in the DOM until loading finishes &mdash; querying for it too early returns null.</p>
+      <button id="start-2" data-testid="dl2-start">Start</button>
+      <div id="loading-2" class="hidden" style="margin-top:14px;" data-testid="dl2-loading">
+        <span class="spinner"></span> Loading&hellip;
+      </div>
+      <div id="finish-2-container" style="margin-top:14px;"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const DELAY_MS = 2000;
+
+    // Example 1: toggle visibility of a pre-existing element
+    document.getElementById("start-1").addEventListener("click", () => {
+      const loading = document.getElementById("loading-1");
+      const finish = document.getElementById("finish-1");
+      finish.classList.add("hidden");
+      loading.classList.remove("hidden");
+      setTimeout(() => {
+        loading.classList.add("hidden");
+        finish.classList.remove("hidden");
+      }, DELAY_MS);
+    });
+
+    // Example 2: insert the element into the DOM only once loading finishes
+    document.getElementById("start-2").addEventListener("click", () => {
+      const loading = document.getElementById("loading-2");
+      const container = document.getElementById("finish-2-container");
+      container.innerHTML = "";
+      loading.classList.remove("hidden");
+      setTimeout(() => {
+        loading.classList.add("hidden");
+        const p = document.createElement("p");
+        p.id = "finish-2";
+        p.className = "result-box success";
+        p.setAttribute("data-testid", "dl2-finish");
+        p.textContent = "Hello World! Element 2 was just added to the DOM.";
+        container.appendChild(p);
+      }, DELAY_MS);
+    });
+  </script>
+</body>
+</html>

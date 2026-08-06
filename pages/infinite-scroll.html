@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infinite Scroll · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Infinite Scroll</h1>
+    <p class="subtitle">New items are appended as you scroll near the bottom of the list. Good for practicing scroll-and-poll patterns.</p>
+
+    <div class="card">
+      <div id="scroll-list" class="scroll-list" data-testid="scroll-list"></div>
+      <p id="scroll-status" class="result-box" style="margin-top:14px;" data-testid="scroll-status">Loaded 0 items</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const list = document.getElementById("scroll-list");
+    const status = document.getElementById("scroll-status");
+    let itemCount = 0;
+    let loading = false;
+    const MAX_ITEMS = 100;
+
+    function loadMore(batchSize = 20) {
+      if (loading || itemCount >= MAX_ITEMS) return;
+      loading = true;
+      setTimeout(() => {
+        const upper = Math.min(itemCount + batchSize, MAX_ITEMS);
+        for (let i = itemCount + 1; i <= upper; i++) {
+          const div = document.createElement("div");
+          div.className = "scroll-item";
+          div.setAttribute("data-testid", `scroll-item-${i}`);
+          div.textContent = `Item #${i}`;
+          list.appendChild(div);
+        }
+        itemCount = upper;
+        status.textContent = itemCount >= MAX_ITEMS ? `Loaded all ${itemCount} items` : `Loaded ${itemCount} items`;
+        loading = false;
+      }, 400);
+    }
+
+    list.addEventListener("scroll", () => {
+      const nearBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 40;
+      if (nearBottom) loadMore();
+    });
+
+    loadMore();
+  </script>
+</body>
+</html>

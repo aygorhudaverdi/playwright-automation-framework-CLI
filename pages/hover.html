@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hover Reveal · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Hover Reveal</h1>
+    <p class="subtitle">Captions and action buttons that only render (and become clickable) on <code>:hover</code>. Requires a real mouse-move action, not just a click at the same coordinates.</p>
+
+    <div class="card">
+      <h2>User cards</h2>
+      <div class="row">
+        <div class="hover-card" data-testid="hover-card-1">
+          User 1
+          <div class="hover-caption" data-testid="hover-caption-1">
+            <div>Jordan Lee</div>
+            <button class="secondary" style="margin-top:6px;" data-testid="hover-action-1">View profile</button>
+          </div>
+        </div>
+        <div class="hover-card" data-testid="hover-card-2">
+          User 2
+          <div class="hover-caption" data-testid="hover-caption-2">
+            <div>Priya Nair</div>
+            <button class="secondary" style="margin-top:6px;" data-testid="hover-action-2">View profile</button>
+          </div>
+        </div>
+        <div class="hover-card" data-testid="hover-card-3">
+          User 3
+          <div class="hover-caption" data-testid="hover-caption-3">
+            <div>Marco Rossi</div>
+            <button class="secondary" style="margin-top:6px;" data-testid="hover-action-3">View profile</button>
+          </div>
+        </div>
+      </div>
+      <p id="hover-result" class="result-box" style="margin-top:14px;" data-testid="hover-result">No action taken yet</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const result = document.getElementById("hover-result");
+    document.querySelectorAll("[data-testid^='hover-action-']").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        result.textContent = `Clicked: ${btn.dataset.testid}`;
+      });
+    });
+  </script>
+</body>
+</html>

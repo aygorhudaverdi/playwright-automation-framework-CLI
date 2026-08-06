@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkboxes · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Checkboxes</h1>
+    <p class="subtitle">Independent checkbox states, a select-all pattern, and an indeterminate state.</p>
+
+    <div class="card">
+      <h2>Select all pattern</h2>
+      <label style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="select-all" data-testid="checkbox-select-all" />
+        <strong>Select all</strong>
+      </label>
+      <hr style="border-color: var(--panel-border); margin: 14px 0;" />
+      <div id="item-list" data-testid="checkbox-list">
+        <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <input type="checkbox" class="item-checkbox" data-testid="checkbox-item-1" /> Item 1 &mdash; unchecked by default
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <input type="checkbox" class="item-checkbox" data-testid="checkbox-item-2" checked /> Item 2 &mdash; checked by default
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <input type="checkbox" class="item-checkbox" data-testid="checkbox-item-3" /> Item 3 &mdash; unchecked by default
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;margin-bottom:0;">
+          <input type="checkbox" class="item-checkbox" data-testid="checkbox-item-4" disabled /> Item 4 &mdash; disabled
+        </label>
+      </div>
+      <div id="checkbox-summary" class="result-box" data-testid="checkbox-summary">0 of 3 selectable items checked</div>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const selectAll = document.getElementById("select-all");
+    const items = Array.from(document.querySelectorAll(".item-checkbox:not([disabled])"));
+    const summary = document.getElementById("checkbox-summary");
+
+    function updateSummary() {
+      const checked = items.filter((i) => i.checked).length;
+      summary.textContent = `${checked} of ${items.length} selectable items checked`;
+
+      if (checked === 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+      } else if (checked === items.length) {
+        selectAll.checked = true;
+        selectAll.indeterminate = false;
+      } else {
+        selectAll.checked = false;
+        selectAll.indeterminate = true;
+      }
+    }
+
+    selectAll.addEventListener("change", () => {
+      items.forEach((i) => (i.checked = selectAll.checked));
+      updateSummary();
+    });
+
+    items.forEach((i) => i.addEventListener("change", updateSummary));
+
+    updateSummary();
+  </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modals · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Modals</h1>
+    <p class="subtitle">An in-page modal (not a native dialog) &mdash; practice waiting for it to render, interacting inside it, and dismissing via button, overlay click, or Escape.</p>
+
+    <div class="card">
+      <button id="open-modal" data-testid="open-modal-btn">Open modal</button>
+      <p id="modal-outcome" class="result-box" style="margin-top:14px;" data-testid="modal-outcome">No action taken yet</p>
+    </div>
+  </main>
+
+  <div id="modal-overlay" class="modal-overlay hidden" data-testid="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" data-testid="modal">
+      <h3 id="modal-title">Confirm action</h3>
+      <p>Are you sure you want to proceed? This is a purely client-side confirmation.</p>
+      <div class="field">
+        <label for="modal-note">Optional note</label>
+        <input type="text" id="modal-note" data-testid="modal-note-input" />
+      </div>
+      <div class="modal-actions">
+        <button class="secondary" id="modal-cancel" data-testid="modal-cancel-btn">Cancel</button>
+        <button id="modal-confirm" data-testid="modal-confirm-btn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const overlay = document.getElementById("modal-overlay");
+    const outcome = document.getElementById("modal-outcome");
+    const noteInput = document.getElementById("modal-note");
+
+    function openModal() {
+      overlay.classList.remove("hidden");
+      noteInput.value = "";
+      noteInput.focus();
+    }
+
+    function closeModal(reason) {
+      overlay.classList.add("hidden");
+      outcome.textContent = reason;
+    }
+
+    document.getElementById("open-modal").addEventListener("click", openModal);
+    document.getElementById("modal-cancel").addEventListener("click", () => closeModal("Cancelled"));
+    document.getElementById("modal-confirm").addEventListener("click", () => {
+      const note = noteInput.value.trim();
+      closeModal(note ? `Confirmed with note: "${note}"` : "Confirmed with no note");
+    });
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeModal("Dismissed via overlay click");
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !overlay.classList.contains("hidden")) {
+        closeModal("Dismissed via Escape key");
+      }
+    });
+  </script>
+</body>
+</html>

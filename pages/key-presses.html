@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Key Presses · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Key Presses</h1>
+    <p class="subtitle">Focus the input and press a key &mdash; the page reports the key name and modifier state, for verifying <code>sendKeys</code>/<code>press</code> calls.</p>
+
+    <div class="card">
+      <div class="field">
+        <label for="key-input">Focus me and type</label>
+        <input type="text" id="key-input" data-testid="key-input" autocomplete="off" />
+      </div>
+      <div class="key-display" data-testid="key-display" id="key-display">No key pressed yet</div>
+      <p id="key-log" class="result-box" style="margin-top:14px;max-height:160px;overflow-y:auto;" data-testid="key-log"></p>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const input = document.getElementById("key-input");
+    const display = document.getElementById("key-display");
+    const log = document.getElementById("key-log");
+    const entries = [];
+
+    input.addEventListener("keydown", (e) => {
+      const mods = [];
+      if (e.ctrlKey) mods.push("Ctrl");
+      if (e.shiftKey) mods.push("Shift");
+      if (e.altKey) mods.push("Alt");
+      if (e.metaKey) mods.push("Meta");
+      const label = mods.length ? `${mods.join("+")}+${e.key}` : e.key;
+
+      display.textContent = `Last key: ${label}`;
+      display.setAttribute("data-last-key", e.key);
+
+      entries.unshift(label);
+      if (entries.length > 10) entries.pop();
+      log.textContent = entries.join("\n");
+    });
+  </script>
+</body>
+</html>

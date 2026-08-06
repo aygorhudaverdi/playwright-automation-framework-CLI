@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drag and Drop · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Drag and Drop</h1>
+    <p class="subtitle">HTML5 native drag-and-drop. Frameworks that don't dispatch real <code>dragstart</code>/<code>drop</code> events will need extra work here.</p>
+
+    <div class="card">
+      <h2>Sort boxes A and B</h2>
+      <p>Drag box A onto box B to swap their positions.</p>
+      <div class="drag-boxes">
+        <div id="box-a" class="drag-box drag-item" draggable="true" data-testid="drag-box-a">A</div>
+        <div id="box-b" class="drag-box drag-item" draggable="true" data-testid="drag-box-b">B</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Drag item into target</h2>
+      <div class="drag-boxes">
+        <div id="drag-source" class="drag-box drag-item" draggable="true" data-testid="drag-source">Drag me</div>
+        <div id="drop-target" class="drag-box drag-target" data-testid="drop-target">Drop here</div>
+      </div>
+      <p id="drop-result" class="result-box" style="margin-top:14px;" data-testid="drop-result">Nothing dropped yet</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    // Swap-on-drop between two boxes
+    const boxA = document.getElementById("box-a");
+    const boxB = document.getElementById("box-b");
+    let draggedSwap = null;
+
+    [boxA, boxB].forEach((box) => {
+      box.addEventListener("dragstart", () => (draggedSwap = box));
+      box.addEventListener("dragover", (e) => e.preventDefault());
+      box.addEventListener("drop", (e) => {
+        e.preventDefault();
+        if (draggedSwap && draggedSwap !== box) {
+          const tmp = document.createElement("div");
+          box.parentNode.insertBefore(tmp, box);
+          draggedSwap.parentNode.insertBefore(box, draggedSwap);
+          tmp.parentNode.insertBefore(draggedSwap, tmp);
+          tmp.remove();
+        }
+      });
+    });
+
+    // Drag source into a distinct drop target
+    const source = document.getElementById("drag-source");
+    const target = document.getElementById("drop-target");
+    const dropResult = document.getElementById("drop-result");
+
+    source.addEventListener("dragstart", (e) => {
+      e.dataTransfer.setData("text/plain", "drag-source");
+    });
+
+    target.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      target.classList.add("dragover");
+    });
+
+    target.addEventListener("dragleave", () => {
+      target.classList.remove("dragover");
+    });
+
+    target.addEventListener("drop", (e) => {
+      e.preventDefault();
+      target.classList.remove("dragover");
+      const data = e.dataTransfer.getData("text/plain");
+      if (data === "drag-source") {
+        target.textContent = "Dropped!";
+        target.classList.remove("drag-target");
+        dropResult.textContent = "Item successfully dropped into target.";
+        dropResult.className = "result-box success";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slow Elements · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Slow Elements</h1>
+    <p class="subtitle">Buttons with artificial latency and a progress bar that fills over a fixed duration &mdash; practice explicit waits with a real, changing condition instead of a fixed sleep.</p>
+
+    <div class="card">
+      <h2>Slow button (disabled while "processing")</h2>
+      <button id="slow-btn" data-testid="slow-btn">Do slow thing (3s)</button>
+      <p id="slow-btn-status" class="result-box" style="margin-top:14px;" data-testid="slow-btn-status">Idle</p>
+    </div>
+
+    <div class="card">
+      <h2>Progress bar</h2>
+      <button id="progress-btn" data-testid="progress-btn">Start progress</button>
+      <div style="margin-top:14px;background:#0f1220;border:1px solid var(--panel-border);border-radius:999px;overflow:hidden;height:14px;">
+        <div id="progress-fill" data-testid="progress-fill" style="height:100%;width:0%;background:var(--accent);transition:width 0.1s linear;"></div>
+      </div>
+      <p id="progress-status" class="result-box" style="margin-top:14px;" data-testid="progress-status">0%</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const slowBtn = document.getElementById("slow-btn");
+    const slowStatus = document.getElementById("slow-btn-status");
+
+    slowBtn.addEventListener("click", () => {
+      slowBtn.disabled = true;
+      slowStatus.textContent = "Processing…";
+      slowStatus.className = "result-box";
+      setTimeout(() => {
+        slowBtn.disabled = false;
+        slowStatus.textContent = "Done!";
+        slowStatus.className = "result-box success";
+      }, 3000);
+    });
+
+    const progressBtn = document.getElementById("progress-btn");
+    const progressFill = document.getElementById("progress-fill");
+    const progressStatus = document.getElementById("progress-status");
+    let progressTimer = null;
+
+    progressBtn.addEventListener("click", () => {
+      if (progressTimer) clearInterval(progressTimer);
+      progressBtn.disabled = true;
+      let pct = 0;
+      progressFill.style.width = "0%";
+      progressFill.setAttribute("data-progress", "0");
+      progressStatus.textContent = "0%";
+
+      progressTimer = setInterval(() => {
+        pct += 4;
+        if (pct >= 100) {
+          pct = 100;
+          clearInterval(progressTimer);
+          progressBtn.disabled = false;
+        }
+        progressFill.style.width = pct + "%";
+        progressFill.setAttribute("data-progress", String(pct));
+        progressStatus.textContent = pct + "%";
+      }, 150);
+    });
+  </script>
+</body>
+</html>

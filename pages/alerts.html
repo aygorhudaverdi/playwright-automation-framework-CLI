@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JS Alerts · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>JS Alerts</h1>
+    <p class="subtitle">Native browser dialogs &mdash; drive these with your framework's alert/confirm/prompt handling APIs, not DOM queries.</p>
+
+    <div class="card">
+      <h2>alert()</h2>
+      <button id="btn-alert" data-testid="btn-js-alert">Trigger alert</button>
+    </div>
+
+    <div class="card">
+      <h2>confirm()</h2>
+      <button id="btn-confirm" data-testid="btn-js-confirm">Trigger confirm</button>
+      <p id="confirm-result" class="result-box" style="margin-top:14px;" data-testid="confirm-result">No result yet</p>
+    </div>
+
+    <div class="card">
+      <h2>prompt()</h2>
+      <button id="btn-prompt" data-testid="btn-js-prompt">Trigger prompt</button>
+      <p id="prompt-result" class="result-box" style="margin-top:14px;" data-testid="prompt-result">No result yet</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    document.getElementById("btn-alert").addEventListener("click", () => {
+      alert("Hello from QA Playground!");
+    });
+
+    document.getElementById("btn-confirm").addEventListener("click", () => {
+      const ok = confirm("Do you confirm this action?");
+      const box = document.getElementById("confirm-result");
+      box.textContent = ok ? "You clicked OK." : "You clicked Cancel.";
+      box.className = "result-box " + (ok ? "success" : "error");
+    });
+
+    document.getElementById("btn-prompt").addEventListener("click", () => {
+      const value = prompt("Type something:");
+      const box = document.getElementById("prompt-result");
+      if (value === null) {
+        box.textContent = "You clicked Cancel.";
+        box.className = "result-box error";
+      } else {
+        box.textContent = `You typed: "${value}"`;
+        box.className = "result-box success";
+      }
+    });
+  </script>
+</body>
+</html>

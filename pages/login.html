@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Login Form</h1>
+    <p class="subtitle">
+      Fake, fully client-side auth. Use <code>qa@example.com</code> / <code>password123</code> for a
+      success path, or anything else to hit the error path.
+    </p>
+
+    <div class="card" style="max-width:380px;">
+      <form id="login-form" data-testid="login-form">
+        <div class="field">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" data-testid="login-email" required />
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" data-testid="login-password" required />
+        </div>
+        <button type="submit" data-testid="login-submit" style="width:100%;">Log in</button>
+      </form>
+      <div id="login-result" class="result-box hidden" data-testid="login-result"></div>
+    </div>
+
+    <div id="logged-in-view" class="card hidden" data-testid="logged-in-view">
+      <h2>Welcome back</h2>
+      <p data-testid="logged-in-message">You are logged in as <strong id="logged-in-email"></strong>.</p>
+      <button id="logout-btn" class="secondary" data-testid="logout-btn">Log out</button>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const VALID_EMAIL = "qa@example.com";
+    const VALID_PASSWORD = "password123";
+
+    const form = document.getElementById("login-form");
+    const resultBox = document.getElementById("login-result");
+    const loggedInView = document.getElementById("logged-in-view");
+    const loggedInEmail = document.getElementById("logged-in-email");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+
+      resultBox.classList.remove("hidden", "success", "error");
+
+      if (email === VALID_EMAIL && password === VALID_PASSWORD) {
+        resultBox.classList.add("success");
+        resultBox.textContent = "Login successful.";
+        loggedInEmail.textContent = email;
+        loggedInView.classList.remove("hidden");
+        form.closest(".card").classList.add("hidden");
+      } else {
+        resultBox.classList.add("error");
+        resultBox.textContent = "Invalid email or password.";
+      }
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      loggedInView.classList.add("hidden");
+      form.closest(".card").classList.remove("hidden");
+      form.reset();
+      resultBox.classList.add("hidden");
+    });
+  </script>
+</body>
+</html>

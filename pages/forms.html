@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Inputs · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Form Inputs</h1>
+    <p class="subtitle">A single form covering the common input types, with client-side validation and a result panel.</p>
+
+    <div class="card">
+      <h2>Registration Form</h2>
+      <form id="demo-form" data-testid="demo-form" novalidate>
+        <div class="field">
+          <label for="full-name">Full name</label>
+          <input type="text" id="full-name" name="fullName" data-testid="input-full-name" required minlength="2" />
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" data-testid="input-email" required />
+        </div>
+
+        <div class="field">
+          <label for="role">Role</label>
+          <select id="role" name="role" data-testid="select-role" required>
+            <option value="">Select a role&hellip;</option>
+            <option value="qa">QA Engineer</option>
+            <option value="dev">Developer</option>
+            <option value="pm">Product Manager</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Experience level</label>
+          <div class="row">
+            <label style="display:flex;align-items:center;gap:6px;margin-bottom:0;">
+              <input type="radio" name="experience" value="junior" data-testid="radio-junior" /> Junior
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;margin-bottom:0;">
+              <input type="radio" name="experience" value="mid" data-testid="radio-mid" /> Mid
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;margin-bottom:0;">
+              <input type="radio" name="experience" value="senior" data-testid="radio-senior" /> Senior
+            </label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="bio">Bio</label>
+          <textarea id="bio" name="bio" rows="4" data-testid="textarea-bio" placeholder="Optional"></textarea>
+        </div>
+
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" id="agree" name="agree" data-testid="checkbox-agree" required />
+            I agree to the terms
+          </label>
+        </div>
+
+        <div class="row">
+          <button type="submit" data-testid="btn-submit">Submit</button>
+          <button type="reset" class="secondary" data-testid="btn-reset">Reset</button>
+        </div>
+      </form>
+
+      <div id="form-result" class="result-box hidden" data-testid="form-result"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    const form = document.getElementById("demo-form");
+    const resultBox = document.getElementById("form-result");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const fullName = document.getElementById("full-name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const role = document.getElementById("role").value;
+      const agree = document.getElementById("agree").checked;
+
+      const errors = [];
+      if (fullName.length < 2) errors.push("Full name must be at least 2 characters.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push("Email is invalid.");
+      if (!role) errors.push("Role is required.");
+      if (!agree) errors.push("You must agree to the terms.");
+
+      resultBox.classList.remove("hidden", "success", "error");
+
+      if (errors.length) {
+        resultBox.classList.add("error");
+        resultBox.textContent = "Validation failed:\n" + errors.map((e) => "- " + e).join("\n");
+        return;
+      }
+
+      const experience = form.querySelector('input[name="experience"]:checked');
+      const payload = {
+        fullName,
+        email,
+        role,
+        experience: experience ? experience.value : null,
+        bio: document.getElementById("bio").value.trim(),
+      };
+
+      resultBox.classList.add("success");
+      resultBox.textContent = "Submitted:\n" + JSON.stringify(payload, null, 2);
+    });
+
+    form.addEventListener("reset", () => {
+      resultBox.classList.add("hidden");
+    });
+  </script>
+</body>
+</html>

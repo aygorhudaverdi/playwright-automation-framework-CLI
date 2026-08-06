@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Broken Images · QA Playground</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+    .img-card { text-align: center; }
+    .img-card img { width: 100%; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid var(--panel-border); background: #0f1220; }
+    .img-card .caption { font-size: 0.8rem; color: var(--text-dim); margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html"><span class="dot"></span> QA Playground</a>
+    <nav>
+      <a href="../index.html">&larr; All Pages</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Broken Images</h1>
+    <p class="subtitle">A mix of valid (inline SVG data-URI, so it works offline) and intentionally broken <code>&lt;img&gt;</code> sources &mdash; use this to test detection of failed image loads via <code>naturalWidth</code> or <code>error</code> events.</p>
+
+    <div class="card">
+      <div class="img-grid" id="img-grid" data-testid="img-grid"></div>
+      <p id="img-summary" class="result-box" style="margin-top:16px;" data-testid="img-summary">Checking images&hellip;</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">QA Playground</footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    function svgDataUri(color, label) {
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='100'><rect width='100%' height='100%' fill='${color}'/><text x='50%' y='55%' font-size='16' fill='white' text-anchor='middle' font-family='sans-serif'>${label}</text></svg>`;
+      return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+    }
+
+    const images = [
+      { src: svgDataUri("#3ecf8e", "Valid 1"), ok: true },
+      { src: "images/does-not-exist-1.jpg", ok: false },
+      { src: svgDataUri("#6c8cff", "Valid 2"), ok: true },
+      { src: "images/does-not-exist-2.png", ok: false },
+      { src: svgDataUri("#ffb454", "Valid 3"), ok: true },
+      { src: "images/missing-asset.gif", ok: false },
+    ];
+
+    const grid = document.getElementById("img-grid");
+    const summary = document.getElementById("img-summary");
+    let loaded = 0;
+    let failed = 0;
+    let settled = 0;
+
+    images.forEach((item, i) => {
+      const card = document.createElement("div");
+      card.className = "img-card";
+      const img = document.createElement("img");
+      img.src = item.src;
+      img.alt = `Test image ${i + 1}`;
+      img.setAttribute("data-testid", `test-image-${i + 1}`);
+      img.setAttribute("data-expected", item.ok ? "valid" : "broken");
+
+      img.addEventListener("load", () => {
+        loaded++;
+        settled++;
+        img.setAttribute("data-load-state", "loaded");
+        updateSummary();
+      });
+      img.addEventListener("error", () => {
+        failed++;
+        settled++;
+        img.setAttribute("data-load-state", "error");
+        updateSummary();
+      });
+
+      const caption = document.createElement("div");
+      caption.className = "caption";
+      caption.textContent = item.ok ? "expected: valid" : "expected: broken";
+
+      card.appendChild(img);
+      card.appendChild(caption);
+      grid.appendChild(card);
+    });
+
+    function updateSummary() {
+      summary.textContent = `${settled}/${images.length} settled — ${loaded} loaded, ${failed} failed`;
+    }
+  </script>
+</body>
+</html>
