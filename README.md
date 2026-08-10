@@ -54,19 +54,61 @@ qa-playground/
 
 ## Test suite
 
-A Playwright test suite (TypeScript, Page Object Model) covers 10 of the
-scenarios above — login, forms, checkboxes, dropdowns, alerts, file upload,
-dynamic loading, key presses, tables, and modals — with roughly 80 test
-cases weighted toward negative and edge cases: native HTML5 validation
-quirks, whitespace/trim asymmetries, disabled/indeterminate states, dialog
-accept/dismiss paths, boundary-length inputs, and DOM-timing races.
+A Playwright test suite (TypeScript) covers 10 of the scenarios above —
+login, forms, checkboxes, dropdowns, alerts, file upload, dynamic loading,
+key presses, tables, and modals — with 81 test cases across Chromium,
+Firefox, and WebKit.
+
+### Architecture — Page Object Model
 
 ```
 tests/
 ├── pages/       # Page Object Model classes — one per scenario, wraps locators + actions
 ├── fixtures/    # custom Playwright `test` that auto-injects each page object
-└── specs/       # test files, grouped by scenario
+└── specs/       # test files, grouped by scenario, assert-only — no raw selectors
 ```
+
+Every scenario has a dedicated page object class (e.g. `LoginPage`,
+`TablesPage`, `ModalsPage`) that owns two things:
+
+- **Locators** — every interactive element on the page, defined once as a
+  typed property, resolved via `data-testid` (falling back to a stable
+  `id` on the couple of elements that don't carry one).
+- **Actions** — small, intention-revealing methods (`login()`, `sortBy()`,
+  `dismissViaOverlay()`) that wrap the actual clicks/fills into a single
+  call describing *what* is happening, not *how*.
+
+Spec files never touch a raw CSS or XPath selector — they call
+`loginPage.login(email, password)` and assert on the result. That
+indirection is the whole point: when a page's markup changes, only its one
+page object needs updating, and every spec exercising that page keeps
+working unchanged. A shared `tests/fixtures/pages.fixture.ts` extends
+Playwright's `test` so each spec receives fully-instantiated page objects
+for free, with zero `new LoginPage(page)` boilerplate.
+
+### Test case design — positive, negative, edge
+
+Every scenario is tested along three axes, deliberately weighted toward
+negative and edge cases — that's where real bugs hide, and what manual
+testing tends to skip:
+
+- **Positive** — the happy path: valid input, expected user flow, confirms
+  the feature works as designed.
+- **Negative** — invalid input, wrong credentials, cancelled/dismissed
+  dialogs, disallowed actions — verifying the app fails *gracefully* with
+  the right message, rather than silently succeeding or breaking.
+- **Edge** — boundary conditions: minimum-length input, whitespace-only
+  strings, empty-vs-cancelled ambiguity, elements that don't exist yet
+  vs. elements that are merely hidden, repeated/retriggered actions,
+  disabled controls.
+
+A few examples of edge cases the suite caught that weren't obvious from
+reading the markup alone: the login form trims whitespace from the email
+field but *not* the password field (so `"password123 "` silently fails);
+the malformed-email negative test never reaches the app's JS at all
+because the browser's native HTML5 validation blocks the submit first;
+and the custom dropdown's menu doesn't close on <kbd>Escape</kbd> because
+no `keydown` handler is wired up for it, unlike the modal.
 
 ### Run the tests
 
@@ -88,6 +130,19 @@ setup needed.
 [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) runs
 the full suite on every push/PR to `main` via GitHub Actions, and uploads
 the HTML report as a build artifact.
+
+### Why the Playwright CLI/test-runner, not MCP Playwright
+
+This suite was written using the standard `@playwright/test` runner and
+CLI — not an MCP Playwright server that drives the browser turn-by-turn
+inside an LLM conversation. An MCP-driven flow round-trips every click,
+DOM snapshot, and screenshot back through the model's context, which is
+great for one-off exploratory poking but gets expensive fast when writing
+dozens of test cases across ten pages. Reading each page's markup once,
+generating real `.spec.ts` files, and letting `npx playwright test` do the
+actual browser driving keeps that back-and-forth out of the loop entirely
+— cheaper in tokens, faster to run, and the result is ordinary,
+version-controlled test code instead of a transcript.
 
 ## License
 
