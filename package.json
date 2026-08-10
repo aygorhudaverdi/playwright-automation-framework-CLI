@@ -1,5 +1,5 @@
 {
-  "name": "qa-playground",
+  "name": "playwright-automation-framework-cli",
   "version": "1.0.0",
   "description": "A static, no-backend UI automation practice target — built to write and run Selenium / Playwright / Cypress tests against realistic scenarios: forms, dynamic content, alerts, drag-and-drop, iframes, shadow DOM, and more.",
   "main": "index.js",
@@ -11,16 +11,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aygorhudaverdi/qa-playground.git"
+    "url": "git+https://github.com/aygorhudaverdi/playwright-automation-framework-CLI.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/aygorhudaverdi/qa-playground/issues"
+    "url": "https://github.com/aygorhudaverdi/playwright-automation-framework-CLI/issues"
   },
-  "homepage": "https://github.com/aygorhudaverdi/qa-playground#readme",
+  "homepage": "https://github.com/aygorhudaverdi/playwright-automation-framework-CLI#readme",
   "devDependencies": {
     "@playwright/test": "^1.62.1",
     "serve": "^14.2.6"

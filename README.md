@@ -45,7 +45,7 @@ python -m http.server 8080
 ## Structure
 
 ```
-qa-playground/
+playwright-automation-framework-CLI/
 ├── index.html        # landing page, links to every scenario
 ├── css/style.css      # shared styling
 ├── js/main.js          # shared nav-highlight script
