@@ -1,4 +1,4 @@
-# QA Playground
+# Playwright Automation Framework
 
 A static, no-backend UI automation practice target — built to write and run
 Selenium / Playwright / Cypress tests against realistic scenarios: forms,
