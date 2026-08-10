@@ -52,6 +52,43 @@ qa-playground/
 └── pages/               # one HTML file per scenario, fully self-contained
 ```
 
+## Test suite
+
+A Playwright test suite (TypeScript, Page Object Model) covers 10 of the
+scenarios above — login, forms, checkboxes, dropdowns, alerts, file upload,
+dynamic loading, key presses, tables, and modals — with roughly 80 test
+cases weighted toward negative and edge cases: native HTML5 validation
+quirks, whitespace/trim asymmetries, disabled/indeterminate states, dialog
+accept/dismiss paths, boundary-length inputs, and DOM-timing races.
+
+```
+tests/
+├── pages/       # Page Object Model classes — one per scenario, wraps locators + actions
+├── fixtures/    # custom Playwright `test` that auto-injects each page object
+└── specs/       # test files, grouped by scenario
+```
+
+### Run the tests
+
+```bash
+npm install
+npx playwright install --with-deps   # first time only
+npm test              # headless, all browsers
+npm run test:headed   # watch it run in a browser
+npm run test:ui       # Playwright's interactive UI mode
+npm run test:report   # open the last HTML report
+```
+
+Tests run against Chromium, Firefox, and WebKit via `playwright.config.ts`,
+which spins up a local static server (`serve`) automatically — no manual
+setup needed.
+
+### CI/CD
+
+[`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) runs
+the full suite on every push/PR to `main` via GitHub Actions, and uploads
+the HTML report as a build artifact.
+
 ## License
 
 MIT — do whatever you want with it.
